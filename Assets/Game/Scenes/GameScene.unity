@@ -2659,6 +2659,7 @@ MonoBehaviour:
   m_Name: 
   m_EditorClassIdentifier: 
   Stack: {fileID: 2289332259047020146, guid: b6724ee977f704244a5a34e141591673, type: 3}
+  BreakStack: {fileID: -5557079080486404142, guid: 189ea7ed623588e498be2596bcf61e33, type: 3}
 --- !u!114 &532130053
 MonoBehaviour:
   m_ObjectHideFlags: 0

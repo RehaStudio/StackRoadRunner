@@ -7,10 +7,12 @@ public class SceneInstaller : MonoInstaller
 {
     #region Fields
     public Stack Stack;
+    public BreakStack BreakStack;
     #endregion
     public override void InstallBindings()
     {
         Container.BindMemoryPool<Stack, Stack.Pool>().FromComponentInNewPrefab(Stack);
+        Container.BindMemoryPool<BreakStack, BreakStack.Pool>().FromComponentInNewPrefab(BreakStack);
         Container.Bind<InputManager>().FromComponentInHierarchy().AsSingle();
         Container.Bind<StackManager>().FromComponentInHierarchy().AsSingle();
     }

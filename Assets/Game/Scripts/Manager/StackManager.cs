@@ -13,6 +13,7 @@ public class StackManager :MonoBehaviour
     #region Fields
     private InputManager _InputManager;
     private Stack.Pool _StackPool;
+    private BreakStack.Pool _BreakStackPool;
 
     private List<Stack> _Stacks = new List<Stack>();
 
@@ -31,10 +32,11 @@ public class StackManager :MonoBehaviour
     #endregion
 
     [Inject]
-    private void Constructor(InputManager inputManager,Stack.Pool stackPool)
+    private void Constructor(InputManager inputManager,Stack.Pool stackPool,BreakStack.Pool breakStackPool)
     {
         _InputManager = inputManager;
         _StackPool = stackPool;
+        _BreakStackPool = breakStackPool;
         CustomInitialize();
     }
     private void CustomInitialize()
@@ -78,7 +80,18 @@ public class StackManager :MonoBehaviour
         _CurrentStack.SetSize(_CurrentStack.GetSize() - magnitude);
         _CurrentStack.SetLocalPosition(_CurrentStack.GetLocalPosition() + distance * Vector3.left / 2);
         _OnStackPlaced?.Invoke(_CurrentStack);
+        FallBreakStack(distance);
     }
+    private void FallBreakStack(float distance)
+    {
+        BreakStack breakStack = _BreakStackPool.Spawn();
+        breakStack.transform.SetParent(_StackGroupParent);
+        breakStack.SetColor(_CurrentStack.GetColor());
+        breakStack.SetSize(Mathf.Abs(distance));
+        breakStack.SetLocalPosition(_CurrentStack.GetLocalPosition() + Mathf.Sign(distance) * _CurrentStack.GetSize() * Vector3.right / 2 - distance * Vector3.left / 2);
+        breakStack.Fall();
+    }
+
 
     private void RemoveNotSeenStack()
     {

@@ -42,6 +42,10 @@ public class Stack : MonoBehaviour
         _MaterialPropertyBlock.SetColor(Constants.Color, color);
         MeshRenderer.SetPropertyBlock(_MaterialPropertyBlock);
     }
+    public Color GetColor()
+    {
+        return _MaterialPropertyBlock.GetColor(Constants.Color);
+    }
     public class Pool : MemoryPool<Stack>
     {
         protected override void OnCreated(Stack stack)
