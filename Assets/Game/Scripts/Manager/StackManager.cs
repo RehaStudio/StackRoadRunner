@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using System.Linq;
@@ -6,6 +7,9 @@ using Zenject;
 
 public class StackManager :MonoBehaviour
 {
+
+    public event Action<Stack> _OnStackPlaced;
+
     #region Fields
     private InputManager _InputManager;
     private Stack.Pool _StackPool;
@@ -45,6 +49,21 @@ public class StackManager :MonoBehaviour
         CheckStackPlacement();
         CreateStack();
     }
+    private void CreateStack()
+    {
+        _Stacks.Add(_StackPool.Spawn());
+
+        _CurrentStack.transform.SetParent(_StackGroupParent);
+        _CurrentStack.SetLocalPosition(_StackCount * Vector3.forward * Constants.StackStepSize + Vector3.right * 4f * _MoveDirection);
+        _CurrentStack.SetColor(_StackColors[_StackCount % _StackColors.Length]);
+        _CurrentStack.SetSize(_CurrentStackStartSize);
+        _CurrentStack.MoveHorizontal(_MoveDirection * (-4f));
+
+        _MoveDirection *= -1;
+        _StackCount++;
+        RemoveNotSeenStack();
+    }
+
     private void CheckStackPlacement()
     {
         float centerPosition = _PreviousStack != null ? _PreviousStack.GetLocalPosition().x : 0;
@@ -58,21 +77,9 @@ public class StackManager :MonoBehaviour
         }
         _CurrentStack.SetSize(_CurrentStack.GetSize() - magnitude);
         _CurrentStack.SetLocalPosition(_CurrentStack.GetLocalPosition() + distance * Vector3.left / 2);
+        _OnStackPlaced?.Invoke(_CurrentStack);
     }
-    private void CreateStack()
-    {
-        _Stacks.Add(_StackPool.Spawn());
-        
-        _CurrentStack.transform.SetParent(_StackGroupParent);
-        _CurrentStack.SetLocalPosition(_StackCount * Vector3.forward * Constants.StackStepSize + Vector3.right * 4f * _MoveDirection);
-        _CurrentStack.SetColor(_StackColors[_StackCount % _StackColors.Length]);
-        _CurrentStack.SetSize(_CurrentStackStartSize);
-        _CurrentStack.MoveHorizontal(_MoveDirection * (-4f));
 
-        _MoveDirection *= -1;
-        _StackCount++;
-        RemoveNotSeenStack();
-    }
     private void RemoveNotSeenStack()
     {
         if (_Stacks.Count > 3)
