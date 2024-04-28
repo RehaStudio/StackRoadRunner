@@ -4,19 +4,36 @@ using Zenject;
 
 public class Stack : MonoBehaviour
 {
+    #region Fields
     private MaterialPropertyBlock _MaterialPropertyBlock;
+    private Tween _HorizontalMoveTween;
+    #endregion
+    #region Properties
     public MeshRenderer MeshRenderer { get; set; }
+    #endregion
     public void MoveHorizontal(float targetX)
     {
-        transform.DOMoveX(targetX, 2f).SetEase(Ease.Linear).SetSpeedBased();
+        _HorizontalMoveTween = transform.DOMoveX(targetX, 4f).SetEase(Ease.Linear).SetSpeedBased();
+    }
+    public void StopMove()
+    {
+        _HorizontalMoveTween.Kill();
     }
     public void SetLocalPosition(Vector3 localPosition)
     {
         transform.localPosition = localPosition;
     }
+    public Vector3 GetLocalPosition()
+    {
+        return transform.localPosition;
+    }
     public void SetSize(float size)
     {
-        transform.localScale = Vector3.one.SetX(size);
+        transform.localScale = new Vector3(size, 1f, Constants.StackStepSize);
+    }
+    public float GetSize()
+    {
+        return transform.localScale.x;
     }
     public void SetColor(Color color)
     {
