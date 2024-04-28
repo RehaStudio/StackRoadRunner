@@ -4,5 +4,5 @@ using UnityEngine;
 
 public static class Constants 
 {
-    public const string BaseColor = "_BaseColor";
+    public const string Color = "_Color";
 }

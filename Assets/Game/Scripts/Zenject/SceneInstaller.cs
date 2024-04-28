@@ -10,7 +10,8 @@ public class SceneInstaller : MonoInstaller
     #endregion
     public override void InstallBindings()
     {
-        Container.Bind<InputManager>().FromComponentInHierarchy().AsSingle();
         Container.BindMemoryPool<Stack, Stack.Pool>().FromComponentInNewPrefab(Stack);
+        Container.Bind<InputManager>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<StackManager>().FromComponentInHierarchy().AsSingle();
     }
 }
