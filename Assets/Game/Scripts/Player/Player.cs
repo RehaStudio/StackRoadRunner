@@ -31,4 +31,9 @@ public class Player : MonoBehaviour
     {
         _PlayerStateMachine.ChangeStateTo<PlayerDanceState>();
     }
+    private void OnTriggerEnter(Collider collider)
+    {
+        if (collider.TryGetComponent<IInteract<Player>>(out IInteract<Player> interactObject))
+            interactObject.Interact(this);
+    }
 }

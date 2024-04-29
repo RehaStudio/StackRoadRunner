@@ -18,5 +18,6 @@ public class SceneInstaller : MonoInstaller
         Container.Bind<StackManager>().FromComponentInHierarchy().AsSingle();
         Container.Bind<LevelManager>().FromComponentInHierarchy().AsSingle();
         Container.Bind<GameManager>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<VFXManager>().FromComponentInHierarchy().AsSingle();
     }
 }

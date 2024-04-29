@@ -40,6 +40,6 @@ public class UIManager : MonoBehaviour
 
     private void OnLevelCompleted()
     {
-   
+        ShowPanel<WinPanel>();
     }
 }

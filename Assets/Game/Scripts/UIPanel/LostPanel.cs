@@ -22,7 +22,8 @@ public class LostPanel : UIPanel
     }
     private void Restart()
     {
-        //_GameManager.LevelStarted();
+        _GameManager.LevelStarted();
+        Hide();
     }
     private void OnDestroy()
     {

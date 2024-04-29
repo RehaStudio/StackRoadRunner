@@ -65,6 +65,7 @@ public class StackManager :MonoBehaviour
     {
         _StackCount = 0;
         _Stacks.ForEach(e => _StackPool.Despawn(e));
+        _Stacks.Clear();
     }
     private void OnMouseButtonDowned()
     {
@@ -163,6 +164,7 @@ public class StackManager :MonoBehaviour
     private void Fail()
     {
         _StackPool.Despawn(_CurrentStack);
+        _Stacks.Remove(_CurrentStack);
         _GameManager.LevelFailed();
         _InputManager.OnMouseButtonDowned -= OnMouseButtonDowned;
     }

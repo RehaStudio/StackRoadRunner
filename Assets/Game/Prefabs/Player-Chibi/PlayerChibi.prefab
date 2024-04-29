@@ -352,6 +352,8 @@ GameObject:
   - component: {fileID: 5646447060418037118}
   - component: {fileID: 1782327572533206788}
   - component: {fileID: 1120742416}
+  - component: {fileID: 1952392088}
+  - component: {fileID: 1952392089}
   m_Layer: 0
   m_Name: PlayerChibi
   m_TagString: Untagged
@@ -408,6 +410,35 @@ MonoBehaviour:
   m_Script: {fileID: 11500000, guid: 16efe5062f0d5f24fb5777d69a4523d2, type: 3}
   m_Name: 
   m_EditorClassIdentifier: 
+--- !u!54 &1952392088
+Rigidbody:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4978699718255468484}
+  serializedVersion: 2
+  m_Mass: 1
+  m_Drag: 0
+  m_AngularDrag: 0
+  m_UseGravity: 0
+  m_IsKinematic: 1
+  m_Interpolate: 0
+  m_Constraints: 0
+  m_CollisionDetection: 0
+--- !u!65 &1952392089
+BoxCollider:
+  m_ObjectHideFlags: 0
+  m_CorrespondingSourceObject: {fileID: 0}
+  m_PrefabInstance: {fileID: 0}
+  m_PrefabAsset: {fileID: 0}
+  m_GameObject: {fileID: 4978699718255468484}
+  m_Material: {fileID: 0}
+  m_IsTrigger: 0
+  m_Enabled: 1
+  serializedVersion: 2
+  m_Size: {x: 0.64128447, y: 1.720678, z: 0.35319036}
+  m_Center: {x: 0.011061013, y: 0.3603391, z: -0.03137502}
 --- !u!1 &5103577072221404319
 GameObject:
   m_ObjectHideFlags: 0

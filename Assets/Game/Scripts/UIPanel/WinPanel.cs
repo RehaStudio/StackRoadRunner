@@ -20,8 +20,9 @@ public class WinPanel : UIPanel
         NextLevelButton.onClick.AddListener(NextLevel);
     }
     private void NextLevel()
-    { 
-        
+    {
+        _GameManager.LevelStarted();
+        Hide();  
     }
     private void OnDestroy()
     {
