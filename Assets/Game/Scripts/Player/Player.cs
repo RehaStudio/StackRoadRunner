@@ -1,21 +1,34 @@
 using DG.Tweening;
-using System.Collections;
-using System.Collections.Generic;
+using System;
 using UnityEngine;
 
 public class Player : MonoBehaviour
 {
     private PlayerStateMachine _PlayerStateMachine;
-    public void CustomInitialize()
+    public Animator _Animator { get; private set; }
+    private Tween _ForwardMoveTween;
+    public void Initialize()
     {
+        _Animator = GetComponent<Animator>();
         _PlayerStateMachine = new PlayerStateMachine(this);
     }
-    public void GoForward(float value)
+    public void GoForward(float value,Action onCompleted = null)
     {
-        transform.DOMoveZ(value, 4f).SetSpeedBased().SetRelative().SetEase(Ease.Linear);
+        if (_ForwardMoveTween != null)
+            _ForwardMoveTween.Kill();
+        _ForwardMoveTween = transform.DOMoveZ(value, 4f).SetSpeedBased().SetRelative().SetEase(Ease.Linear);
+        _ForwardMoveTween.OnComplete(() => onCompleted?.Invoke());
     }
     public void GoRight(float value) 
     {
         transform.DOMoveX(value, 4f).SetSpeedBased().SetEase(Ease.Linear);
+    }
+    public void SetPosition(Vector3 position)
+    {
+        transform.position = position;
+    }
+    public void Dance()
+    {
+        _PlayerStateMachine.ChangeStateTo<PlayerDanceState>();
     }
 }

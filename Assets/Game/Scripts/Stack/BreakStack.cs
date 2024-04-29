@@ -31,7 +31,7 @@ public class BreakStack : MonoBehaviour
     }
     public void Fall()
     {
-        transform.DOMoveY(-5, 2f).SetDelay(0.1f).OnComplete(() => 
+        transform.DOMoveY(-10f, 2f).SetEase(Ease.Linear).SetDelay(0.1f).OnComplete(() => 
         {
             _BreakPool.Despawn(this);
         });

@@ -7,15 +7,16 @@ using Zenject;
 
 public class StackManager :MonoBehaviour
 {
-
+    #region Events
     public event Action<Stack> _OnStackPlaced;
-
+    #endregion
     #region Fields
     [SerializeField] private Transform _StackGroupParent;
     [SerializeField] private Color[] _StackColors;
 
     private InputManager _InputManager;
     private SoundManager _SoundManager;
+    private GameManager _GameManager;
     private Stack.Pool _StackPool;
     private BreakStack.Pool _BreakStackPool;
 
@@ -36,25 +37,44 @@ public class StackManager :MonoBehaviour
     #endregion
 
     [Inject]
-    private void Constructor(InputManager inputManager,SoundManager soundManager, Stack.Pool stackPool,BreakStack.Pool breakStackPool)
+    private void Constructor(InputManager inputManager,SoundManager soundManager,GameManager gameManager)
     {
         _InputManager = inputManager;
         _SoundManager = soundManager;
+        _GameManager = gameManager;
+        CustomInitialize();
+    }
+    [Inject]
+    private void ConstructorPool(Stack.Pool stackPool, BreakStack.Pool breakStackPool)
+    {
         _StackPool = stackPool;
         _BreakStackPool = breakStackPool;
-        CustomInitialize();
     }
     private void CustomInitialize()
     {
-        _InputManager.OnMouseButtonDowned += OnMouseButtonDowned;
-        CreateStack();
+        _GameManager.OnLevelStarted += OnLevelStarted;
     }
 
+    private void OnLevelStarted()
+    {
+        ClearStacks();
+        CreateStack();
+        _InputManager.OnMouseButtonDowned += OnMouseButtonDowned;
+    }
+    private void ClearStacks()
+    {
+        _StackCount = 0;
+        _Stacks.ForEach(e => _StackPool.Despawn(e));
+    }
     private void OnMouseButtonDowned()
     {
         _CurrentStack.StopMove();
-        CheckStackPlacement();
-        CreateStack();
+        if (!CanStackPlace())
+            return;
+        if (IsCompleted())
+            Completed();
+        else
+            CreateStack();
     }
     private void CreateStack()
     {
@@ -71,18 +91,19 @@ public class StackManager :MonoBehaviour
         RemoveNotSeenStack();
     }
 
-    private void CheckStackPlacement()
+    private bool CanStackPlace()
     {
         float centerPosition = _CenterPosition;
         float distance = _CurrentStack.GetLocalPosition().x - centerPosition;
 
         if (Mathf.Abs(distance) > _CurrentStack.GetSize())
         {
+            FallBreakStack(_CurrentStack.GetSize());
             Fail();
-            return;
+            return false;
         }
-
         PlaceStack(distance);
+        return true;
     }
     private void PlaceStack(float distance)
     {
@@ -107,35 +128,51 @@ public class StackManager :MonoBehaviour
     }
     private void FallBreakStack(float distance)
     {
-        if (distance == 0)
-            return;
         BreakStack breakStack = _BreakStackPool.Spawn();
         breakStack.transform.SetParent(_StackGroupParent);
         breakStack.SetColor(_CurrentStack.GetColor());
         breakStack.SetSize(Mathf.Abs(distance));
-        breakStack.SetLocalPosition(_CurrentStack.GetLocalPosition() + Mathf.Sign(distance) * _CurrentStack.GetSize() * Vector3.right / 2 - distance * Vector3.left / 2);
+        if (_CurrentStack.GetSize() != distance)
+            breakStack.SetLocalPosition(_CurrentStack.GetLocalPosition() + Mathf.Sign(distance) * _CurrentStack.GetSize() * Vector3.right / 2 - distance * Vector3.left / 2);
+        else
+            breakStack.SetLocalPosition(_CurrentStack.GetLocalPosition());
         breakStack.Fall();
     }
 
 
     private void RemoveNotSeenStack()
     {
-        if (_Stacks.Count > 3)
+        if (_Stacks.Count > 4)
         {
             _StackPool.Despawn(_Stacks.First());
             _Stacks.RemoveAt(0);
         }
     }
+    private bool IsCompleted()
+    {
+        if (_StackCount == _GameManager.LevelStackCount)
+            return true;
+        return false;
+    }
+    private void Completed()
+    {
+        _GameManager.LevelCompleted();
+        _InputManager.OnMouseButtonDowned -= OnMouseButtonDowned;
+    }
 
     private void Fail()
     {
-        Debug.Log("Level Failed");
+        _StackPool.Despawn(_CurrentStack);
+        _GameManager.LevelFailed();
+        _InputManager.OnMouseButtonDowned -= OnMouseButtonDowned;
     }
     #region Unity_Functions
     private void OnDestroy()
     {
         if (_InputManager != null)
             _InputManager.OnMouseButtonDowned -= OnMouseButtonDowned;
+        if(_GameManager != null)
+            _GameManager.OnLevelStarted -= OnLevelStarted;
     }
     #endregion
 }

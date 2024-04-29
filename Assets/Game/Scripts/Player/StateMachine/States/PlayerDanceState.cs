@@ -11,7 +11,7 @@ public class PlayerDanceState : BaseState<Player>
 
     public override void Enter()
     {
-   
+        CurrentObject._Animator.SetTrigger(PlayerStateMachineKeys.Dance);
     }
 
     public override void Execute()

@@ -22,7 +22,7 @@ public class BaseStateMachine<T>
             if (_CurrentState != _States[i] || force)
             {
                 _PrevState = _CurrentState;
-                _CurrentState.Exit();
+                _CurrentState?.Exit();
                 _CurrentState = _States[i];
                 _CurrentState.Enter();
             }

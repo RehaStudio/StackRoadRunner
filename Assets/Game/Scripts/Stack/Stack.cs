@@ -53,5 +53,15 @@ public class Stack : MonoBehaviour
             stack.MeshRenderer = stack.GetComponent<MeshRenderer>();
             base.OnCreated(stack);
         }
+        protected override void OnDespawned(Stack stack)
+        {
+            stack.gameObject.SetActive(false);   
+            base.OnDespawned(stack);
+        }
+        protected override void OnSpawned(Stack stack)
+        {
+            stack.gameObject.SetActive(true);
+            base.OnSpawned(stack);
+        }
     }
 }
