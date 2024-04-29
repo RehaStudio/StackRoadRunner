@@ -12,6 +12,7 @@ public class GameManager: MonoBehaviour
     public int LevelStackCount => _LevelManager._CurrentLevel.StackCount;
     #region Events
     public event Action OnLevelStarted;
+    public event Action OnLevelRestarted;
     public event Action OnLevelCompleted;
     public event Action OnLevelFailed;
     #endregion
@@ -31,5 +32,9 @@ public class GameManager: MonoBehaviour
     public void LevelStarted()
     {
         OnLevelStarted?.Invoke();
+    }
+    public void LevelRestarted()
+    {
+        OnLevelRestarted?.Invoke();
     }
 }

@@ -11,7 +11,7 @@ public class PlayerRunState : BaseState<Player>
 
     public override void Enter()
     {
-       
+        CurrentObject._Animator.SetTrigger(PlayerStateMachineKeys.Run);
     }
 
     public override void Execute()

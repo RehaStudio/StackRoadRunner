@@ -8,11 +8,11 @@ public class WinPanel : UIPanel
 {
     [SerializeField] private Button NextLevelButton;
 
-    private GameManager _GameManager;
+    private PlayerManager _PlayerManager;
     [Inject]
-    private void Constructor(GameManager gameManager)
+    private void Constructor(PlayerManager playerManager)
     {
-        _GameManager = gameManager;
+        _PlayerManager = playerManager;
     }
     public override void Initialize()
     {
@@ -21,7 +21,7 @@ public class WinPanel : UIPanel
     }
     private void NextLevel()
     {
-        _GameManager.LevelStarted();
+        _PlayerManager.PlayerGoStartPosition();
         Hide();  
     }
     private void OnDestroy()

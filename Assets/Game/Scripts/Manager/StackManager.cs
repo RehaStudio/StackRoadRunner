@@ -22,7 +22,6 @@ public class StackManager :MonoBehaviour
 
     private List<Stack> _Stacks = new List<Stack>();
 
-    private int _StackCount;
     private float _MoveDirection = 1;
     private float _TresholdPerfectMatch = .2f;
 
@@ -30,6 +29,7 @@ public class StackManager :MonoBehaviour
     #endregion
 
     #region Properties
+    public int StackCount { get;  private set; }
     private Stack _CurrentStack => _Stacks.Last();
     private Stack _PreviousStack => _Stacks.Count > 1 ? _Stacks[_Stacks.Count - 2] : null;
     private float _CurrentStackStartSize => _PreviousStack != null ? _PreviousStack.GetSize() : Constants.StackStartSize;
@@ -53,19 +53,27 @@ public class StackManager :MonoBehaviour
     private void CustomInitialize()
     {
         _GameManager.OnLevelStarted += OnLevelStarted;
+        _GameManager.OnLevelRestarted += OnLevelRestarted;
     }
-
     private void OnLevelStarted()
     {
         ClearStacks();
         CreateStack();
         _InputManager.OnMouseButtonDowned += OnMouseButtonDowned;
     }
+    private void OnLevelRestarted()
+    {
+        OnLevelStarted();
+    }
     private void ClearStacks()
     {
-        _StackCount = 0;
+        StackCount = 0;
         _Stacks.ForEach(e => _StackPool.Despawn(e));
         _Stacks.Clear();
+    }
+    public void StackStartPositionUpdated(float value)
+    {
+       _StackGroupParent.transform.position = _StackGroupParent.transform.position.SetZ(value);
     }
     private void OnMouseButtonDowned()
     {
@@ -82,17 +90,17 @@ public class StackManager :MonoBehaviour
         _Stacks.Add(_StackPool.Spawn());
 
         _CurrentStack.transform.SetParent(_StackGroupParent);
-        _CurrentStack.SetLocalPosition(_StackCount * Vector3.forward * Constants.StackStepSize + Vector3.right * 4f * _MoveDirection);
-        _CurrentStack.SetColor(_StackColors[_StackCount % _StackColors.Length]);
+        _CurrentStack.SetLocalPosition(StackCount * Vector3.forward * Constants.StackStepSize + Vector3.right * 4f * _MoveDirection);
+        _CurrentStack.SetColor(_StackColors[StackCount % _StackColors.Length]);
         _CurrentStack.SetSize(_CurrentStackStartSize);
         _CurrentStack.MoveHorizontal(_MoveDirection * (-4f));
 
         _MoveDirection *= -1;
-        _StackCount++;
+        StackCount++;
         RemoveNotSeenStack();
     }
 
-    private bool CanStackPlace()
+    public bool CanStackPlace()
     {
         float centerPosition = _CenterPosition;
         float distance = _CurrentStack.GetLocalPosition().x - centerPosition;
@@ -151,7 +159,7 @@ public class StackManager :MonoBehaviour
     }
     private bool IsCompleted()
     {
-        if (_StackCount == _GameManager.LevelStackCount)
+        if (StackCount == _GameManager.LevelStackCount)
             return true;
         return false;
     }
@@ -173,8 +181,11 @@ public class StackManager :MonoBehaviour
     {
         if (_InputManager != null)
             _InputManager.OnMouseButtonDowned -= OnMouseButtonDowned;
-        if(_GameManager != null)
+        if (_GameManager != null)
+        { 
             _GameManager.OnLevelStarted -= OnLevelStarted;
+            _GameManager.OnLevelRestarted -= OnLevelRestarted;
+        }
     }
     #endregion
 }

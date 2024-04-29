@@ -5,15 +5,15 @@ using UnityEngine;
 public class VFXManager : MonoBehaviour
 {
     public ParticleSystem[] CollectibleVFX;
-    public void PlayVFX(VFX_Type type,Vector3 position)
+    public void PlayVFX(CollectibleType type,Vector3 position)
     {
         CollectibleVFX[((int)type)].transform.position = position;
         CollectibleVFX[((int)type)].Play();
     }
 }
-public enum VFX_Type
+public enum CollectibleType
 {
-    GoldCollect,
-    StarCollect,
-    DiamondCollect,
+    Coin,
+    Star,
+    Diamond,
 }

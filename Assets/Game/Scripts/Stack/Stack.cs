@@ -1,19 +1,30 @@
 using DG.Tweening;
+using System.Net.NetworkInformation;
 using UnityEngine;
 using Zenject;
 
 public class Stack : MonoBehaviour
 {
     #region Fields
+    private StackManager _StackManager;
     private MaterialPropertyBlock _MaterialPropertyBlock;
     private Tween _HorizontalMoveTween;
     #endregion
     #region Properties
     public MeshRenderer MeshRenderer { get; set; }
     #endregion
+    [Inject]
+    private void Constructor(StackManager stackManager)
+    {
+        _StackManager = stackManager;
+    }
     public void MoveHorizontal(float targetX)
     {
         _HorizontalMoveTween = transform.DOMoveX(targetX, 4f).SetEase(Ease.Linear).SetSpeedBased();
+        _HorizontalMoveTween.OnComplete(() =>
+        {
+            _StackManager.CanStackPlace();
+        });
     }
     public void StopMove()
     {

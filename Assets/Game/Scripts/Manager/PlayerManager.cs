@@ -22,23 +22,32 @@ public class PlayerManager : MonoBehaviour
         Player.Initialize();
         _StackManager._OnStackPlaced += OnStackPlaced;
         _GameManager.OnLevelCompleted += OnLevelCompleted;
-        _GameManager.OnLevelStarted += OnLevelStarted;
+        _GameManager.OnLevelRestarted += OnLevelRestarted;
     }
 
-    private void OnLevelStarted()
+    private void OnLevelRestarted()
     {
         Player.SetPosition(Vector3.zero);
     }
 
     private void OnLevelCompleted()
     {
-        Player.GoForward(6f, Player.Dance);
+        Player.GoForward(Constants.StackStepSize*2, Player.Dance);
     }
 
     private void OnStackPlaced(Stack stack)
     {
         Player.GoRight(stack.GetLocalPosition().x);
         Player.GoForward(Constants.StackStepSize);
+    }
+    public void PlayerGoStartPosition()
+    {
+        Player.GoForward(Constants.StackStepSize, PlayerReachedStartPosition);
+        Player.Run();
+    }
+    private void PlayerReachedStartPosition()
+    {
+        _GameManager.LevelStarted();
     }
     private void OnDestroy()
     {
@@ -47,7 +56,7 @@ public class PlayerManager : MonoBehaviour
         if (_GameManager != null)
         { 
             _GameManager.OnLevelCompleted -= OnLevelCompleted;
-            _GameManager.OnLevelStarted -= OnLevelStarted;
+            _GameManager.OnLevelRestarted -= OnLevelRestarted;
         }
     }
 }

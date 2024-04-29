@@ -31,6 +31,10 @@ public class Player : MonoBehaviour
     {
         _PlayerStateMachine.ChangeStateTo<PlayerDanceState>();
     }
+    public void Run()
+    {
+        _PlayerStateMachine.ChangeStateTo<PlayerRunState>();
+    }
     private void OnTriggerEnter(Collider collider)
     {
         if (collider.TryGetComponent<IInteract<Player>>(out IInteract<Player> interactObject))

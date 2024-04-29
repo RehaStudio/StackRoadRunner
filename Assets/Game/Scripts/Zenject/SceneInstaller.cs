@@ -7,11 +7,13 @@ public class SceneInstaller : MonoInstaller
 {
     #region Fields
     public Stack Stack;
+    public CollectibleObject CollectibleObject;
     public BreakStack BreakStack;
     #endregion
     public override void InstallBindings()
     {
         Container.BindMemoryPool<Stack, Stack.Pool>().FromComponentInNewPrefab(Stack);
+        Container.BindMemoryPool<CollectibleObject, CollectibleObject.Pool>().FromComponentInNewPrefab(CollectibleObject);
         Container.BindMemoryPool<BreakStack, BreakStack.Pool>().FromComponentInNewPrefab(BreakStack);
         Container.Bind<InputManager>().FromComponentInHierarchy().AsSingle();
         Container.Bind<SoundManager>().FromComponentInHierarchy().AsSingle();
@@ -19,5 +21,6 @@ public class SceneInstaller : MonoInstaller
         Container.Bind<LevelManager>().FromComponentInHierarchy().AsSingle();
         Container.Bind<GameManager>().FromComponentInHierarchy().AsSingle();
         Container.Bind<VFXManager>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<PlayerManager>().FromComponentInHierarchy().AsSingle();
     }
 }
