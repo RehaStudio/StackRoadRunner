@@ -23,7 +23,7 @@ public class StackManager :MonoBehaviour
 
     private int _StackCount;
     private float _MoveDirection = 1;
-    private float _TresholdPerfectMatch = .3f;
+    private float _TresholdPerfectMatch = .2f;
 
     private int ComboPerfectMatch = 0;
     #endregion

@@ -6,8 +6,14 @@ using Zenject;
 
 public class BreakStack : MonoBehaviour
 {
+    private BreakStack.Pool _BreakPool;
     public MeshRenderer MeshRenderer { get; set; }
-    private MaterialPropertyBlock _MaterialPropertyBlock;
+    private MaterialPropertyBlock _MaterialPropertyBlock; 
+    [Inject]
+    private void Constructor(BreakStack.Pool pool)
+    {
+        _BreakPool = pool;
+    }
     public void SetColor(Color color)
     {
         if (_MaterialPropertyBlock == null)
@@ -25,7 +31,10 @@ public class BreakStack : MonoBehaviour
     }
     public void Fall()
     {
-        transform.DOMoveY(-5, 2f).SetDelay(0.1f);
+        transform.DOMoveY(-5, 2f).SetDelay(0.1f).OnComplete(() => 
+        {
+            _BreakPool.Despawn(this);
+        });
     }
     public class Pool : MemoryPool<BreakStack>
     {
@@ -33,6 +42,16 @@ public class BreakStack : MonoBehaviour
         {
             breakStack.MeshRenderer = breakStack.GetComponent<MeshRenderer>();
             base.OnCreated(breakStack);
+        }
+        protected override void OnDespawned(BreakStack breakStack)
+        {
+            breakStack.gameObject.SetActive(false);
+            base.OnDespawned(breakStack);
+        }
+        protected override void OnSpawned(BreakStack breakStack)
+        {
+            breakStack.gameObject.SetActive(true);
+            base.OnSpawned(breakStack);
         }
     }
 }
