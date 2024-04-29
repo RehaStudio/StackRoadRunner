@@ -14,6 +14,7 @@ public class SceneInstaller : MonoInstaller
         Container.BindMemoryPool<Stack, Stack.Pool>().FromComponentInNewPrefab(Stack);
         Container.BindMemoryPool<BreakStack, BreakStack.Pool>().FromComponentInNewPrefab(BreakStack);
         Container.Bind<InputManager>().FromComponentInHierarchy().AsSingle();
+        Container.Bind<SoundManager>().FromComponentInHierarchy().AsSingle();
         Container.Bind<StackManager>().FromComponentInHierarchy().AsSingle();
     }
 }

@@ -11,7 +11,11 @@ public class StackManager :MonoBehaviour
     public event Action<Stack> _OnStackPlaced;
 
     #region Fields
+    [SerializeField] private Transform _StackGroupParent;
+    [SerializeField] private Color[] _StackColors;
+
     private InputManager _InputManager;
+    private SoundManager _SoundManager;
     private Stack.Pool _StackPool;
     private BreakStack.Pool _BreakStackPool;
 
@@ -19,22 +23,23 @@ public class StackManager :MonoBehaviour
 
     private int _StackCount;
     private float _MoveDirection = 1;
+    private float _TresholdPerfectMatch = .3f;
 
-    [SerializeField] private Transform _StackGroupParent;
-    [SerializeField] private Color[] _StackColors;
+    private int ComboPerfectMatch = 0;
     #endregion
 
     #region Properties
     private Stack _CurrentStack => _Stacks.Last();
     private Stack _PreviousStack => _Stacks.Count > 1 ? _Stacks[_Stacks.Count - 2] : null;
-
     private float _CurrentStackStartSize => _PreviousStack != null ? _PreviousStack.GetSize() : Constants.StackStartSize;
+    private float _CenterPosition => _PreviousStack != null ? _PreviousStack.GetLocalPosition().x : 0;
     #endregion
 
     [Inject]
-    private void Constructor(InputManager inputManager,Stack.Pool stackPool,BreakStack.Pool breakStackPool)
+    private void Constructor(InputManager inputManager,SoundManager soundManager, Stack.Pool stackPool,BreakStack.Pool breakStackPool)
     {
         _InputManager = inputManager;
+        _SoundManager = soundManager;
         _StackPool = stackPool;
         _BreakStackPool = breakStackPool;
         CustomInitialize();
@@ -68,22 +73,42 @@ public class StackManager :MonoBehaviour
 
     private void CheckStackPlacement()
     {
-        float centerPosition = _PreviousStack != null ? _PreviousStack.GetLocalPosition().x : 0;
+        float centerPosition = _CenterPosition;
         float distance = _CurrentStack.GetLocalPosition().x - centerPosition;
-        float magnitude = Mathf.Abs(distance);
 
-        if (magnitude > _CurrentStack.GetSize())
+        if (Mathf.Abs(distance) > _CurrentStack.GetSize())
         {
             Fail();
             return;
         }
-        _CurrentStack.SetSize(_CurrentStack.GetSize() - magnitude);
-        _CurrentStack.SetLocalPosition(_CurrentStack.GetLocalPosition() + distance * Vector3.left / 2);
+
+        PlaceStack(distance);
+    }
+    private void PlaceStack(float distance)
+    {
+        float magnitude = Mathf.Abs(distance);
+        if (magnitude <= _TresholdPerfectMatch)
+            PerfectMatch();
+        else
+        {
+            _CurrentStack.SetSize(_CurrentStack.GetSize() - magnitude);
+            _CurrentStack.SetLocalPosition(_CurrentStack.GetLocalPosition() + distance * Vector3.left / 2);
+            FallBreakStack(distance);
+            ComboPerfectMatch = 0;
+        }
         _OnStackPlaced?.Invoke(_CurrentStack);
-        FallBreakStack(distance);
+    }
+    private void PerfectMatch()
+    {
+        _CurrentStack.SetSize(_CurrentStackStartSize);
+        _CurrentStack.SetLocalPosition(_CurrentStack.GetLocalPosition().SetX(_CenterPosition));
+        _SoundManager.PlayStackPerfectMatch(ComboPerfectMatch);
+        ComboPerfectMatch++;
     }
     private void FallBreakStack(float distance)
     {
+        if (distance == 0)
+            return;
         BreakStack breakStack = _BreakStackPool.Spawn();
         breakStack.transform.SetParent(_StackGroupParent);
         breakStack.SetColor(_CurrentStack.GetColor());
