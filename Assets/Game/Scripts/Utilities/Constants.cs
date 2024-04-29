@@ -14,3 +14,9 @@ public static class PlayerStateMachineKeys
     public const string Dance = "Dance";
     public const string Run = "Run";
 }
+public enum CollectibleType
+{
+    Coin,
+    Star,
+    Diamond,
+}

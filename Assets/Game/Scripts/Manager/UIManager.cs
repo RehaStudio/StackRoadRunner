@@ -5,8 +5,10 @@ using Zenject;
 
 public class UIManager : MonoBehaviour
 {
+    #region Fields
     private GameManager _GameManager;
     public List<UIPanel> _Panels;
+    #endregion
     [Inject]
     private void Constructor(GameManager gameManager)
     {

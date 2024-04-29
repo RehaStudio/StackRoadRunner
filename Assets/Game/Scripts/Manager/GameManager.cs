@@ -9,7 +9,9 @@ public class GameManager: MonoBehaviour
     #region Fields
     private LevelManager _LevelManager;
     #endregion
+    #region Properties
     public int LevelStackCount => _LevelManager._CurrentLevel.StackCount;
+    #endregion
     #region Events
     public event Action OnLevelStarted;
     public event Action OnLevelRestarted;

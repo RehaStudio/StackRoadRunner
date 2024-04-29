@@ -4,9 +4,11 @@ using UnityEngine;
 
 public class Player : MonoBehaviour
 {
+    #region Fields
     private PlayerStateMachine _PlayerStateMachine;
     public Animator _Animator { get; private set; }
     private Tween _ForwardMoveTween;
+    #endregion
     public void Initialize()
     {
         _Animator = GetComponent<Animator>();

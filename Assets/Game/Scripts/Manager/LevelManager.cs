@@ -5,9 +5,10 @@ using Zenject;
 
 public class LevelManager : MonoBehaviour
 {
+    #region Fields
     private GameManager _GameManager;
     private PlayerManager _PlayerManager;
-    #region Fields
+
     [SerializeField] private List<Level> _Levels = new List<Level>();
     [SerializeField] private Transform _FinishObject;
     [SerializeField] private Transform _StartObject;

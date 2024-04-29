@@ -5,11 +5,12 @@ using Zenject;
 
 public class PlayerManager : MonoBehaviour
 {
+    #region Fields
     private StackManager _StackManager;
     private GameManager _GameManager;
 
     public Player Player;
-
+    #endregion
     [Inject]
     public void Constructor(StackManager stackManager,GameManager gameManager)
     {

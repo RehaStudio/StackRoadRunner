@@ -6,9 +6,11 @@ using Zenject;
 
 public class BreakStack : MonoBehaviour
 {
+    #region Fields
     private BreakStack.Pool _BreakPool;
     public MeshRenderer MeshRenderer { get; set; }
-    private MaterialPropertyBlock _MaterialPropertyBlock; 
+    private MaterialPropertyBlock _MaterialPropertyBlock;
+    #endregion
     [Inject]
     private void Constructor(BreakStack.Pool pool)
     {

@@ -6,9 +6,11 @@ using Zenject;
 
 public class LostPanel : UIPanel
 {
+    #region Fields
     [SerializeField] private Button RestartButton;
 
     private GameManager _GameManager;
+    #endregion
     [Inject]
     private void Constructor(GameManager gameManager)
     {

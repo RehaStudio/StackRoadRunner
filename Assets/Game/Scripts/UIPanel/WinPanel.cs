@@ -6,9 +6,11 @@ using Zenject;
 
 public class WinPanel : UIPanel
 {
+    #region Fields
     [SerializeField] private Button NextLevelButton;
 
     private PlayerManager _PlayerManager;
+    #endregion
     [Inject]
     private void Constructor(PlayerManager playerManager)
     {
